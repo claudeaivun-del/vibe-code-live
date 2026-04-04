@@ -27,7 +27,7 @@ const Index = () => {
       {/* Chat Sidebar */}
       {chatOpen && (
         <div className="w-80 flex-shrink-0 border-r border-border flex flex-col">
-          <ChatPanel messages={chatMessages} onSendMessage={sendMessage} />
+          <ChatPanel messages={chatMessages} onSendMessage={sendMessage} isLoading={isAiLoading} />
         </div>
       )}
 
