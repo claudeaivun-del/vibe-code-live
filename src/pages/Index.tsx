@@ -17,6 +17,7 @@ const Index = () => {
     deleteFile,
     chatMessages,
     sendMessage,
+    isAiLoading,
   } = useCodeStore();
 
   const [chatOpen, setChatOpen] = useState(true);
