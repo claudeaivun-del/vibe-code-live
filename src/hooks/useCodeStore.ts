@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface CodeFile {
   id: string;
@@ -116,11 +117,12 @@ console.log('App loaded successfully! 🚀');`,
 export function useCodeStore() {
   const [files, setFiles] = useState<CodeFile[]>(defaultFiles);
   const [activeFileId, setActiveFileId] = useState(defaultFiles[0].id);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       role: 'ai',
-      content: 'مرحباً! 👋 أنا مساعدك في البرمجة. يمكنك سؤالي عن أي شيء يتعلق بالكود أو طلب تعديلات.',
+      content: 'مرحباً! 👋 أنا مساعدك الذكي المدعوم بـ Gemini. يمكنك سؤالي عن أي شيء يتعلق بالكود أو طلب تعديلات.',
       timestamp: new Date(),
     },
   ]);
@@ -163,17 +165,33 @@ export function useCodeStore() {
       timestamp: new Date(),
     };
     setChatMessages((prev) => [...prev, userMsg]);
+    setIsAiLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'ai',
-        content: getAIResponse(content),
-        timestamp: new Date(),
-      };
-      setChatMessages((prev) => [...prev, aiMsg]);
-    }, 800);
+    supabase.functions
+      .invoke('gemini-chat', { body: { message: content } })
+      .then(({ data, error }) => {
+        const reply = error
+          ? `⚠️ خطأ: ${error.message}`
+          : data?.reply || 'لم أتمكن من الحصول على رد.';
+
+        const aiMsg: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          role: 'ai',
+          content: reply,
+          timestamp: new Date(),
+        };
+        setChatMessages((prev) => [...prev, aiMsg]);
+      })
+      .catch((err) => {
+        const aiMsg: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          role: 'ai',
+          content: `⚠️ خطأ في الاتصال: ${err.message}`,
+          timestamp: new Date(),
+        };
+        setChatMessages((prev) => [...prev, aiMsg]);
+      })
+      .finally(() => setIsAiLoading(false));
   }, []);
 
   return {
@@ -186,22 +204,6 @@ export function useCodeStore() {
     deleteFile,
     chatMessages,
     sendMessage,
+    isAiLoading,
   };
-}
-
-function getAIResponse(input: string): string {
-  const lower = input.toLowerCase();
-  if (lower.includes('css') || lower.includes('ستايل') || lower.includes('تصميم')) {
-    return 'يمكنك تعديل ملف style.css لتغيير التصميم. جرب تغيير الألوان أو الخطوط! 🎨';
-  }
-  if (lower.includes('javascript') || lower.includes('js') || lower.includes('جافا')) {
-    return 'ملف app.js يحتوي على منطق التطبيق. يمكنك إضافة وظائف جديدة أو تعديل الموجودة. 💻';
-  }
-  if (lower.includes('html') || lower.includes('صفحة')) {
-    return 'ملف index.html هو الهيكل الأساسي. أضف عناصر جديدة مثل `<div>` أو `<section>`. 📄';
-  }
-  if (lower.includes('ملف') || lower.includes('file') || lower.includes('إضافة')) {
-    return 'يمكنك إضافة ملف جديد بالضغط على زر + في شريط الملفات. ✨';
-  }
-  return 'أنا هنا للمساعدة! اسألني عن HTML, CSS, JavaScript أو أي شيء يتعلق بمشروعك. 🚀';
 }
