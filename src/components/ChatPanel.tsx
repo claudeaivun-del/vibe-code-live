@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Loader2 } from 'lucide-react';
 import type { ChatMessage } from '@/hooks/useCodeStore';
 
 interface ChatPanelProps {
   messages: ChatMessage[];
   onSendMessage: (content: string) => void;
+  isLoading?: boolean;
 }
 
-const ChatPanel = ({ messages, onSendMessage }: ChatPanelProps) => {
+const ChatPanel = ({ messages, onSendMessage, isLoading }: ChatPanelProps) => {
   const [input, setInput] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -16,7 +17,7 @@ const ChatPanel = ({ messages, onSendMessage }: ChatPanelProps) => {
   }, [messages]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
     onSendMessage(input.trim());
     setInput('');
   };
@@ -27,7 +28,7 @@ const ChatPanel = ({ messages, onSendMessage }: ChatPanelProps) => {
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
         <Sparkles className="w-4 h-4 text-primary" />
         <span className="text-sm font-semibold text-foreground">AI Chat</span>
-        <span className="ml-auto text-xs text-muted-foreground">Vibe Assistant</span>
+        <span className="ml-auto text-xs text-muted-foreground">Gemini Agent</span>
       </div>
 
       {/* Messages */}
@@ -56,6 +57,17 @@ const ChatPanel = ({ messages, onSendMessage }: ChatPanelProps) => {
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="flex items-start gap-2">
+            <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 bg-accent/20 text-accent">
+              <Bot className="w-3.5 h-3.5" />
+            </div>
+            <div className="rounded-lg px-3 py-2 text-sm bg-secondary text-muted-foreground flex items-center gap-2">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              يفكر...
+            </div>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
@@ -70,10 +82,11 @@ const ChatPanel = ({ messages, onSendMessage }: ChatPanelProps) => {
             placeholder="اكتب رسالتك..."
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
             dir="auto"
+            disabled={isLoading}
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isLoading}
             className="p-1.5 rounded-md bg-primary text-primary-foreground disabled:opacity-30 hover:opacity-90 transition-opacity"
           >
             <Send className="w-3.5 h-3.5" />
