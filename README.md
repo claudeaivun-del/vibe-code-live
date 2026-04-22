@@ -1,44 +1,53 @@
-# PhishSim — Social Engineering Simulation Platform
+# PhishProbe — Phishing Simulation & Awareness Platform
 
-> Phishing Awareness & Social Engineering Training Tool
+> Live Phishing Campaign Testing & Security Awareness Training Tool
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue) ![React](https://img.shields.io/badge/React-18+-61DAFB) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Overview
 
-PhishSim is a social engineering simulation platform designed for security awareness training. It allows security teams to run controlled phishing campaigns, vishing simulations, and pretexting exercises to test and improve employee security awareness.
+PhishProbe is a phishing simulation platform for security teams and red teamers. It allows you to launch controlled phishing campaigns, track click rates, harvest credentials in a sandboxed environment, and generate awareness training reports.
 
 ## Features
 
-- 🎣 **Phishing Campaigns** — Realistic email phishing simulations
-- 📞 **Vishing Simulation** — Voice-based social engineering scripts
-- 🖥️ **Landing Pages** — Fake login page templates for credential harvesting tests
-- 📊 **Click Tracking** — Who clicked, when, and from where
-- 🎓 **Training Module** — Auto-redirect caught users to security awareness training
-- 📈 **Campaign Reports** — Success rates, vulnerability metrics, improvement tracking
+- 🎣 **Campaign Builder** — Create realistic phishing emails with custom templates
+- 📊 **Live Tracking** — Real-time open/click/credential capture dashboard
+- 🧠 **Awareness Training** — Auto-enroll users who clicked into training modules
+- 🖥️ **Landing Pages** — Cloned login pages for simulation purposes
+- 📧 **SMTP Integration** — Send via custom mail servers
+- 📋 **Reports** — Per-user and per-campaign PDF reports
 
 ## Installation
 
 ```bash
 git clone https://github.com/claudeaivun-del/vibe-code-live
-cd PhishSim
+cd PhishProbe
 npm install
 npm run dev
 ```
 
-## Campaign Types
+## Usage
 
-| Type | Description |
-|------|-------------|
-| Email Phishing | Credential harvesting simulation |
-| Spear Phishing | Targeted individual attacks |
-| Smishing | SMS-based social engineering |
-| Pretexting | Scenario-based manipulation tests |
+```
+1. Create a campaign with a target email list
+2. Choose a phishing template (Office365, Google, LinkedIn...)
+3. Launch and monitor in real-time
+4. Export report with clicked/not-clicked breakdown
+```
+
+## Supported Templates
+
+| Template | Type |
+|----------|------|
+| Office 365 Login | Credential Harvest |
+| Google Drive Share | Link Click |
+| LinkedIn Message | Social Engineering |
+| IT Security Alert | Urgency-based |
 
 ## Disclaimer
 
-> For authorized security awareness training only. Never use against targets without explicit written consent.
+> For authorized security awareness training and red team operations only. Never use against targets without written permission.
 
 ## Author
 
-**Shadow Core** — Social Engineering Specialist | Security Awareness Trainer
+**Shadow Core** — Red Team Specialist | Social Engineering Expert
